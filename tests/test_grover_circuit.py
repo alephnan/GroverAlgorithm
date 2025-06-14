@@ -2,7 +2,12 @@ import pytest
 from qiskit import transpile
 from qiskit_aer import AerSimulator
 
-from src.grover_circuit import create_grover_circuit
+# Adjust the import path
+from src.grover_circuit import (
+    create_grover_circuit,
+    calculate_dynamic_iterations,
+    calculate_optimal_iterations,
+)
 
 # Use AerSimulator for running the circuits
 simulator = AerSimulator(method="automatic")
@@ -54,4 +59,29 @@ def test_grover_circuit_invalid_input():
     with pytest.raises(ValueError, match="must match num_qubits"):
         create_grover_circuit(3, "10")
     with pytest.raises(ValueError, match="must match num_qubits"):
-        create_grover_circuit(3, "1011")
+        create_grover_circuit(3, "1011") # Too long
+
+
+def test_dynamic_iterations_reduce_depth():
+    """Adaptive iteration count should not exceed optimal iterations."""
+    num_qubits = 3
+    target_state = "101"
+
+    optimal = calculate_optimal_iterations(num_qubits)
+    dynamic = calculate_dynamic_iterations(num_qubits, target_state, threshold=0.8)
+
+    assert dynamic <= optimal
+
+    shots = 1024
+    circuit = create_grover_circuit(
+        num_qubits,
+        target_state,
+        iterations=dynamic,
+        measure=True,
+    )
+    t_circuit = transpile(circuit, simulator)
+    result = simulator.run(t_circuit, shots=shots).result()
+    counts = result.get_counts(circuit)
+    target_prob = counts.get(target_state, 0) / shots
+
+    assert target_prob > 0.7
