@@ -82,6 +82,9 @@ To run a simulation with 3 qubits searching for the state `|101>`:
 python run_grover.py -n 3 -m 101
 ```
 
+The Python API also supports searching for multiple states by passing a list of
+binary strings to `create_grover_circuit`.
+
 To see all options:
 ```bash
 python run_grover.py --help
