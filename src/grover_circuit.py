@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Sequence
-fom qiskit import QuantumCircuit, ClassicalRegister, transpile
+from qiskit import QuantumCircuit, ClassicalRegister, transpile
 from qiskit_aer import AerSimulator
 
 # Use explicit relative imports
