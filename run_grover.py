@@ -53,9 +53,9 @@ def run_simulation(n_qubits: int, marked_state_binary: str, shots: int = 1024):
         # Create Grover circuit (measure=True is default in create_grover_circuit now)
         grover_circuit = create_grover_circuit(
             num_qubits=n_qubits,
-            target_state_binary=marked_state_binary,
+            target_states_binary=marked_state_binary,
             iterations=num_iterations,
-            measure=True # Explicitly adding measure gates
+            measure=True  # Explicitly adding measure gates
         )
 
         # print("\nCircuit Diagram:")

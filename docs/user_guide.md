@@ -46,6 +46,13 @@ grover_circuit = create_grover_circuit(num_qubits, target_state, measure=True)
 print(grover_circuit.draw(output='text'))
 ```
 
+You can also provide multiple target states by passing a list of binary strings:
+
+```python
+target_states = ["101", "010"]
+grover_multi = create_grover_circuit(num_qubits, target_states, measure=True)
+```
+
 ## 5. Running the Simulation
 
 You can simulate the circuit using Qiskit's simulators (like `qasm_simulator` for counts or `statevector_simulator` for the state vector).

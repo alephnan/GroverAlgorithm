@@ -72,4 +72,26 @@ def test_oracle_invalid_input():
     with pytest.raises(ValueError, match="must match num_qubits"):
         create_oracle(num_qubits, target_state_binary_long)
 
-# Add more tests as needed, e.g., for edge cases like 1 qubit 
+
+def test_oracle_marks_multiple_states():
+    num_qubits = 3
+    targets = ["101", "010"]
+
+    oracle = create_oracle(num_qubits, targets)
+
+    qc = QuantumCircuit(num_qubits)
+    qc.h(range(num_qubits))
+    qc.append(oracle, range(num_qubits))
+    qc.save_statevector()
+
+    t_qc = transpile(qc, simulator)
+    statevector = simulator.run(t_qc).result().get_statevector()
+
+    amp = 1 / np.sqrt(2 ** num_qubits)
+    for t in targets:
+        assert np.isclose(statevector[int(t, 2)], -amp)
+
+    for i in range(2 ** num_qubits):
+        if format(i, f"0{num_qubits}b") not in targets:
+            assert np.isclose(statevector[i], amp)
+            break
